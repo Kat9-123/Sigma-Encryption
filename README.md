@@ -9,7 +9,7 @@ This programme uses the Unity game engine. Only because the language I'm best at
 
 
 
-<font size="10"> Coming soon: </font>
+<b>Coming Soon:</b>
 Decryption, Salt, Cleaner and better code & Better comments
 
 
