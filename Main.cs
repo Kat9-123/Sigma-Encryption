@@ -1,7 +1,15 @@
-/*
+/* MADE BY: KAT9_123
+ * 
  *
- *
+ * 
+ * 
+ * 
+ * 
+ * 
 */
+
+
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,46 +28,72 @@ public class Main : MonoBehaviour
     public bool decrypt;
     [Space]
     public string KeyPath; //The path to the key/where to make it
-    public string[] Key; //An array for all lines in the key.sigma file
     public int SegmentAmount; //Amount of 'Segments' (layers)
-    public List<string> SegmentsKey = new List<string>();
-    
 
 
+    private string[] Key; //An array for all lines in the key.sigma file
+    private List<string> SegmentsKey = new List<string>();
+
+    private string Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private List<char> Alpha_List = new List<char>();
+    private List<char> Input_List = new List<char>(); //String list of all letters inputted (empty) 
 
     private void Start()
     {
-        if(createkey) CreateKey(); //Go to key create function
-        if(encrypt) Encrypt(); //Go to encrypt function
+
+        StartUp();
+
+        if(createkey) CreateKey(); 
+        if(encrypt) Encrypt(); 
         if(decrypt) Decrypt();
+    }
+
+
+    void StartUp()
+    {
+        #region ::Input handling::
+        //Makes the input IN CAPS
+        Input = Input.ToUpper();
+ 
+        //Slits the Input(String) into Input_List(Char)
+        for (int i = 0; i < Input.Length; i++) 
+        {
+            Input_List.Add(Input[i]); 
+        }
+        #endregion
     }
 
     void CreateKey()
     {
-        //Creating of the Decider
-
+        #region ::Creating of the decider::
         int DeciderInt = Random.Range(1, 25); //choses random number between 1 & 25
         string DeciderStr = DeciderInt + "\n"; //String to hold the decider
+        #endregion
 
-
-
-
+        
+        #region::Creating of the salt::
+        /*
         //Creating Salt
         int saltAmount = Random.Range(6, 32);
         List<int> SaltLocation = new List<int>();
         List<int> SaltLenght = new List<int>();
 
+        for (int l = 0; l < saltAmount; l++)
+        {
+            SaltLocation.Add(Random.Range(0, 100));
+            SaltLenght.Add(Random.Range(0, 10));
+        }
+        */
+        #endregion
 
 
-
-
+        #region ::Creating of the segments::
         //Creating Segments
 
         string[] SegmentA = new string[26]; //This segment letters in an array
         string Segment = ""; //Segment string
         for (int i = 0; i < SegmentAmount; i++)
         {
-
             for (int z = 0; z < 26; z++)
             {
                 string Alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -77,16 +111,12 @@ public class Main : MonoBehaviour
                 Segment = Segment + SegmentA[b].ToString();
             }
             Segment = Segment + "\n";
-            Debug.Log(Segment);
             SegmentsKey.Add(Segment);
             Segment = null;
-
-
-
         }
+        #endregion
 
-
-
+        #region ::Creating of the key.sigma file at the specified path::
         string path = KeyPath + "/key.sigma"; //Real path (path + /key.sigma)
         if (!File.Exists(path)) //If the file doesn't already exist
         {
@@ -95,240 +125,202 @@ public class Main : MonoBehaviour
             {
                 File.AppendAllText(path, SegmentsKey[x]); //Adds the segment to the file
             }
-
-
         }
+        #endregion
 
-
-
-
-
-    } //Key create function
-
-
+    } 
 
     void Encrypt() //Encrypt function
     {
 
+        #region ::Reading the file specified with the path::
         Key = File.ReadAllText(KeyPath + "/key.sigma").Split("\n"[0]); //Finds the key with the path and puts it in the key string array
+        #endregion
 
-
-
-        string Alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; //The alphabet in string form
-        List<string> AlphaList = new List<string>(); //Empty list to contain the alphabet
-        for (int x = 0; x < 26; x++) //For each letter in the alpha(bet) string
+        #region ::Encryption::
+        for (int z = 0; z < Input_List.Count; z++) //For each letter in the input list
         {
 
-            AlphaList.Add(Alpha[x].ToString()); //Adds the x letter from the alpha(bet) string to the Alpha(bet)List string list
-        }
-
-        List<string> InpL = new List<string>(); //String list of all letters inputted (empty) 
-        for (int i = 0; i < Input.Length; i++) //For loop each letter in the Input string
-        {
-
-            InpL.Add(Input[i].ToString()); //It takes the i letter from the Input and adds it to (InpL) the input list
-
-        }
-        for (int z = 0; z < InpL.Count; z++) //For each letter in the input list
-        {
-
-
-            string CurrentEnc = InpL[z]; //The letter that will be currently processed
-            string secondEnc = ""; //Temp string to hold letter
-            int decider = int.Parse(Key[0]); //Parses the decider to an ints
-            List<string> tempAplha = new List<string>(); //The temp alphabet in a list
-
-
-
-            
             #region ::Shifts the tempalpha list by z*decider, z being the amount of items in the input list - 1::
 
-            tempAplha.Clear(); //Clears the temp alphabet list
-            //adds all letters from the alphabet to firstaplha exept for the z*decider's (z = ammount of items in inpL - 1)
-            int shiftAmount = z * decider;
+            int decider = int.Parse(Key[0]); //Parses the decider to an ints
+            List<string> SwitchAplha = new List<string>(); //The temp alphabet in a list
 
+            SwitchAplha.Clear(); //Clears the temp alphabet list
+
+            int shiftAmount = z * decider;
             if (shiftAmount > 26)
             {
-                shiftAmount = shiftAmount - 26 * (z - 1);
+                for (int c = 0; shiftAmount > 26; c++)
+                {
+                    shiftAmount -= 26;
+                }
 
             }
 
-
-
-
             for (int j = 26 - shiftAmount; j < 26; j++)
             {
-                tempAplha.Add(AlphaList[j]); //Add the letter from AlphaList (main alphabet)
+                SwitchAplha.Add(Alphabet[j].ToString()); //Add the letter from AlphaList (main alphabet)
             }
             //Adds the other letters to tempAlpha
             for (int u = 0; u < 26 - shiftAmount; u++)
             {
-                tempAplha.Add(AlphaList[u]);
+                SwitchAplha.Add(Alphabet[u].ToString());
             }
+
+
+
             #endregion
 
-
-
-            #region ::Main encrypition::
+            #region ::Encrypt::
+            
+            string TempLetterProcess = ""; //Temp string to hold letter
+            string tempkey;
+            string CurrentLetterProcess = Input_List[z].ToString(); //The letter that will be currently processed
+            
             for (int h = 1; h <= Key.Length - 2; h++) //For the amount of segments in the key
             {
-
+                #region ::Normal segment::
                 for (int g = 0; g < 26; g++) //For each letter in said segment
                 {
-
-                    if (CurrentEnc == Alpha[g].ToString()) //If the that is being processed currently is equal to a letter in the alphabet. g=the index of said letter
+                    if (CurrentLetterProcess == Alphabet[g].ToString()) //If the that is being processed currently is equal to a letter in the alphabet. g=the index of said letter
                     {
-
-                        string tempkey = Key[h].ToString(); //String tempkey becomes the segment that is currently used to encrypt
-                        secondEnc = tempkey[g].ToString();  //secondEnc is the g index in said string
+                        tempkey = Key[h].ToString(); //String tempkey becomes the segment that is currently used to encrypt
+                        TempLetterProcess = tempkey[g].ToString();  //secondEnc is the g index in said string
                     }
                 }
+                #endregion
                 
+                #region ::First segment:: 
                 if (h == 1) //Checks if first segment
                 {
                     for (int g = 0; g < 26; g++) //For each letter in said segment
                     {
-
-                        if (CurrentEnc == tempAplha[g]) //If the that is being processed currently is equal to a letter in the alphabet. g=the index of said letter
+                        if (CurrentLetterProcess == SwitchAplha[g]) //If the that is being processed currently is equal to a letter in the alphabet. g=the index of said letter
                         {
-
-                            string tempkey = Key[h].ToString(); //String tempkey becomes the segment that is currently used to encrypt
-                            secondEnc = tempkey[g].ToString();  //secondEnc is the g index in said string
+                            tempkey = Key[h].ToString(); //String tempkey becomes the segment that is currently used to encrypt
+                            TempLetterProcess = tempkey[g].ToString();  //secondEnc is the g index in said string
                         }
                     }
-
                 }
+                #endregion
                 
-                
-
-                CurrentEnc = secondEnc; //currentEnc becomes secondEnc
+                CurrentLetterProcess = TempLetterProcess;
             }
+            Output = Output + CurrentLetterProcess; //Adds the currentletter to the output
             #endregion
 
-
-
-
-
-
-            Output = Output + CurrentEnc; //Adds the currentletter to the output
-
-
-
-
-
-
         }
+        #endregion
     }
 
     void Decrypt()
     {
+        #region ::Reading the file specified with the path::
         Key = File.ReadAllText(KeyPath + "/key.sigma").Split("\n"[0]); //Finds the key with the path and puts it in the key string array
-        string Alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; //The alphabet in string form
-        List<string> AlphaList = new List<string>(); //Empty list to contain the alphabet
-        for (int x = 0; x < 26; x++) //For each letter in the alpha(bet) string
+        #endregion
+
+        #region ::Decryption::
+        for (int z = 0; z < Input_List.Count; z++) //For each letter in the input list
         {
-
-            AlphaList.Add(Alpha[x].ToString()); //Adds the x letter from the alpha(bet) string to the Alpha(bet)List string list
-        }
-
-        List<string> InpL = new List<string>(); //String list of all letters inputted (empty) 
-        for (int i = 0; i < Input.Length; i++) //For loop each letter in the Input string
-        {
-
-            InpL.Add(Input[i].ToString()); //It takes the i letter from the Input and adds it to (InpL) the input list
-
-        }
-
-
-
-
-
-
-        for (int z = 0; z < InpL.Count; z++) //For each letter in the input list
-        {
-
-
-            string CurrentEnc = InpL[z]; //The letter that will be currently processed
-            string secondEnc = ""; //Temp string to hold letter
-            int decider = int.Parse(Key[0]); //Parses the decider to an ints
-            List<string> tempAplha = new List<string>(); //The temp alphabet in a list
 
             #region ::Shifts the tempalpha list by z*decider, z being the amount of items in the input list - 1::
 
-            tempAplha.Clear(); //Clears the temp alphabet list
-            //adds all letters from the alphabet to firstaplha exept for the z*decider's (z = ammount of items in inpL - 1)
+            int decider = int.Parse(Key[0]); //Parses the decider to an ints
+            List<string> SwitchAplha = new List<string>(); //The temp alphabet in a list
+
+
+
             int shiftAmount = z * decider;
+
+            SwitchAplha.Clear(); //Clears the temp alphabet list
+
 
             if (shiftAmount > 26)
             {
-                shiftAmount = shiftAmount - 26 * (z - 1);
+                for (int c = 0; shiftAmount > 26; c++)
+                {
+                    shiftAmount -= 26;
+                }
 
             }
-
 
 
 
             for (int j = 26 - shiftAmount; j < 26; j++)
             {
-                tempAplha.Add(AlphaList[j]); //Add the letter from AlphaList (main alphabet)
+                SwitchAplha.Add(Alphabet[j].ToString()); //Add the letter from AlphaList (main alphabet)
             }
             //Adds the other letters to tempAlpha
             for (int u = 0; u < 26 - shiftAmount; u++)
             {
-                tempAplha.Add(AlphaList[u]);
+                SwitchAplha.Add(Alphabet[u].ToString());
             }
+
+
+
             #endregion
 
 
 
+            #region ::Decrypt::
 
 
+            string TempLetterProcess = ""; //Temp string to hold letter
+            string tempkey;
+            string CurrentLetterProcess = Input_List[z].ToString(); //The letter that will be currently processed
 
-            #region ::Main decryption::
 
             for (int h = Key.Length - 2; h > 0; h--) //For the amount of segments in the key
             {
 
-                string tempkey = Key[h].ToString(); //String tempkey becomes the segment that is currently used to encrypt
-                Debug.Log(tempkey);
-                Debug.Log(h);
+                #region ::Normal segment::
+                tempkey = Key[h].ToString();
                 for (int g = 0; g < 26; g++) //For each letter in said segment
                 {
 
 
-                    
-
-                    if (CurrentEnc == tempkey[g].ToString()) //If the that is being processed currently is equal to a letter in the alphabet. g=the index of said letter
+                    if (CurrentLetterProcess == tempkey[g].ToString()) //If the that is being processed currently is equal to a letter in the alphabet. g=the index of said letter
                     {
 
 
 
-                        secondEnc = Alpha[g].ToString();
+                        TempLetterProcess = Alphabet[g].ToString();
 
                     }
                 }
+                #endregion
+
                 
-                
+                #region ::Last segment:: 
                 if (h == 1)
                 {
+                    tempkey = Key[1].ToString();
+
+
                     for (int g = 0; g < 26; g++) //For each letter in said segment
                     {
 
-                        if (CurrentEnc == tempkey[g].ToString()) //If the that is being processed currently is equal to a letter in the alphabet. g=the index of said letter
+                        if (CurrentLetterProcess == tempkey[g].ToString()) //If the that is being processed currently is equal to a letter in the alphabet. g=the index of said letter
                         {
-                            secondEnc = tempAplha[g];
+                        
+                            TempLetterProcess = SwitchAplha[g];
                         }
                     }
 
                 }
-                
+                #endregion
                 
 
-                CurrentEnc = secondEnc; //currentEnc becomes secondEnc
- 
+                CurrentLetterProcess = TempLetterProcess;
             }
+            Output = Output + CurrentLetterProcess; //Adds the currentletter to the output
             #endregion
-            Output = Output + CurrentEnc; //Adds the currentletter to the output
+
+
+
+
         }
+        #endregion
     }
 }
