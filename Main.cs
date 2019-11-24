@@ -1,11 +1,14 @@
-/* MADE BY: KAT9_123
+/* MADE BY: Kat9_123
  * 
- *
+ * An encyption programme based on the enigma machine. This is still under development!!!
+ * 
+ * Coming Soon: Salt!
+ * 
+ * This programme uses the Unity game engine. Only because the language I'm best at is C# + Unity.
+ * (I know Unity isn't really meant for stuff like this but idc)
  * 
  * 
- * 
- * 
- * 
+ * One may use and edit this code or distribute it any way but these top comments MUST BE INCLUDED!! (Line 1 through 12)
 */
 
 
@@ -130,7 +133,7 @@ public class Main : MonoBehaviour
 
     } 
 
-    void Encrypt() //Encrypt function
+    void Encrypt()
     {
 
         #region ::Reading the file specified with the path::
@@ -262,8 +265,6 @@ public class Main : MonoBehaviour
 
             #endregion
 
-
-
             #region ::Decrypt::
 
 
@@ -317,9 +318,6 @@ public class Main : MonoBehaviour
             }
             Output = Output + CurrentLetterProcess; //Adds the currentletter to the output
             #endregion
-
-
-
 
         }
         #endregion
