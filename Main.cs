@@ -141,14 +141,15 @@ public class Main : MonoBehaviour
         for (int z = 0; z < Input_List.Count; z++) //For each letter in the input list
         {
 
-            #region ::Shifts the tempalpha list by z*decider, z being the amount of items in the input list - 1::
+            #region ::Shifts the SwitchAlpha list for extra safety::
 
-            int decider = int.Parse(Key[0]); //Parses the decider to an ints
-            List<string> SwitchAplha = new List<string>(); //The temp alphabet in a list
+            int decider = int.Parse(Key[0]); //Parses the decider to an int
+            List<char> SwitchAplha = new List<char>(); //Declares the Alphabet char list that will be switched over
 
-            SwitchAplha.Clear(); //Clears the temp alphabet list
+            SwitchAplha.Clear(); //Clears the SwitchAlpha list
 
-            int shiftAmount = z * decider;
+            int shiftAmount = z * decider; //Amount of input * the decider
+            //If the shiftAmount is >26 then it does shiftAmount -26 untill it is under (or) 26
             if (shiftAmount > 26)
             {
                 for (int c = 0; shiftAmount > 26; c++)
@@ -158,14 +159,15 @@ public class Main : MonoBehaviour
 
             }
 
+            //Adds the last shiftAmount letters of the Alphabet to SwitchAlpha
             for (int j = 26 - shiftAmount; j < 26; j++)
             {
-                SwitchAplha.Add(Alphabet[j].ToString()); //Add the letter from AlphaList (main alphabet)
+                SwitchAplha.Add(Alphabet[j]); //Add the letter from AlphaList (main alphabet)
             }
-            //Adds the other letters to tempAlpha
+            //Adds the rest of the letters
             for (int u = 0; u < 26 - shiftAmount; u++)
             {
-                SwitchAplha.Add(Alphabet[u].ToString());
+                SwitchAplha.Add(Alphabet[u]);
             }
 
 
@@ -196,7 +198,7 @@ public class Main : MonoBehaviour
                 {
                     for (int g = 0; g < 26; g++) //For each letter in said segment
                     {
-                        if (CurrentLetterProcess == SwitchAplha[g]) //If the that is being processed currently is equal to a letter in the alphabet. g=the index of said letter
+                        if (CurrentLetterProcess == SwitchAplha[g].ToString()) //If the that is being processed currently is equal to a letter in the alphabet. g=the index of said letter
                         {
                             tempkey = Key[h].ToString(); //String tempkey becomes the segment that is currently used to encrypt
                             TempLetterProcess = tempkey[g].ToString();  //secondEnc is the g index in said string
@@ -227,14 +229,14 @@ public class Main : MonoBehaviour
             #region ::Shifts the tempalpha list by z*decider, z being the amount of items in the input list - 1::
 
             int decider = int.Parse(Key[0]); //Parses the decider to an ints
-            List<string> SwitchAplha = new List<string>(); //The temp alphabet in a list
+            List<char> SwitchAplha = new List<char>(); //The temp alphabet in a list
 
 
 
-            int shiftAmount = z * decider;
+
 
             SwitchAplha.Clear(); //Clears the temp alphabet list
-
+            int shiftAmount = z * decider;
 
             if (shiftAmount > 26)
             {
@@ -242,19 +244,18 @@ public class Main : MonoBehaviour
                 {
                     shiftAmount -= 26;
                 }
-
             }
 
 
 
             for (int j = 26 - shiftAmount; j < 26; j++)
             {
-                SwitchAplha.Add(Alphabet[j].ToString()); //Add the letter from AlphaList (main alphabet)
+                SwitchAplha.Add(Alphabet[j]); //Add the letter from Alphabet (main alphabet)
             }
             //Adds the other letters to tempAlpha
             for (int u = 0; u < 26 - shiftAmount; u++)
             {
-                SwitchAplha.Add(Alphabet[u].ToString());
+                SwitchAplha.Add(Alphabet[u]);
             }
 
 
@@ -304,7 +305,7 @@ public class Main : MonoBehaviour
                         if (CurrentLetterProcess == tempkey[g].ToString()) //If the that is being processed currently is equal to a letter in the alphabet. g=the index of said letter
                         {
                         
-                            TempLetterProcess = SwitchAplha[g];
+                            TempLetterProcess = SwitchAplha[g].ToString();
                         }
                     }
 
