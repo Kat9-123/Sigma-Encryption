@@ -6,7 +6,7 @@
  * (I know Unity isn't really meant for stuff like this but idc)
  * 
  * 
- * One may use and edit this code or distribute it any way but these top comments MUST BE INCLUDED!! (Line 1 through 12)
+ * One may use and edit this code or distribute it any way but these top comments MUST BE INCLUDED!! (Line 1 through 10)
 */
 using System.Collections.Generic;
 using UnityEngine;
