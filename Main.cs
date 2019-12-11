@@ -2,8 +2,6 @@
  * 
  * An encyption programme based on the enigma machine. This is still under development!!!
  * 
- * Coming Soon: Salt!
- * 
  * This programme uses the Unity game engine. Only because the language I'm best at is C# + Unity.
  * (I know Unity isn't really meant for stuff like this but idc)
  * 
